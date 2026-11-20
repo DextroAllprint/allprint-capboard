@@ -1,0 +1,109 @@
+name: Pacote de fabricação
+
+on:
+  push:
+    branches: [master, main, devel]
+    paths:
+      - '**.PcbDoc'
+      - '**.SchDoc'
+      - 'tools/fab/**'
+      - '.github/workflows/fabricacao.yml'
+  pull_request:
+    paths:
+      - '**.PcbDoc'
+      - '**.SchDoc'
+      - 'tools/fab/**'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: fab-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  pacote:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+
+      # O KiCad 9 le o .PcbDoc do Altium pela API Python (PCB_IO_MGR.ALTIUM_DESIGNER),
+      # entao nao e preciso Altium nem Windows. Os modelos 3D vem embutidos no
+      # proprio .PcbDoc, entao o kicad-packages3d (2 GB) e dispensavel.
+      - name: Instalar o KiCad
+        run: |
+          sudo add-apt-repository --yes ppa:kicad/kicad-9.0-releases
+          sudo apt-get update -qq
+          # O silk destes projetos usa Arial Bold Italic. Sem a fonte, o KiCad
+          # substitui por Liberation Sans Bold e o texto perde o italico, saindo
+          # visivelmente diferente do que o Altium desenha.
+          echo 'ttf-mscorefonts-installer msttcorefonts/accepted-mscorefonts-eula select true' \
+            | sudo debconf-set-selections
+          sudo apt-get install -y --no-install-recommends \
+            kicad xvfb poppler-utils ttf-mscorefonts-installer
+          fc-cache -f
+          fc-list | grep -qi arial || { echo 'ERRO: Arial nao instalada'; exit 1; }
+          kicad-cli --version
+
+      - name: Gerar e validar o pacote
+        run: xvfb-run -a python3 tools/fab/build.py --out build --commit "${GITHUB_SHA::7}"
+
+      - name: Publicar os artefatos do build
+        uses: actions/upload-artifact@v4
+        with:
+          name: pacote-fabricacao
+          path: |
+            build/*.zip
+            build/fab/Montagem/*.csv
+            build/fab/Previa/*
+            build/fab/PINOUT.md
+            build/img/*.png
+            build/meta.json
+          retention-days: 30
+
+      # Release so nas branches, nunca em PR: o zip vira o link estavel do README.
+      # Sao publicados dois jogos: os versionados, que ficam de arquivo, e as
+      # copias '-latest', que sustentam os links fixos do README.
+      - name: Publicar o Release
+        if: github.event_name != 'pull_request'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          VERSAO=$(python3 -c "import json;print(json.load(open('build/meta.json'))['versao'])")
+          gh release create "$VERSAO" \
+            build/*.zip \
+            build/fab/Montagem/*.csv \
+            build/fab/Esquema/*.pdf \
+            build/estavel/* \
+            --title "Pacote de fabricação $VERSAO" \
+            --notes "Gerado automaticamente de \`ALLPRINT-CAPBOARD-677512.PcbDoc\` e das 11 folhas de esquema no commit \`${GITHUB_SHA::7}\`.
+
+          $(sed -n '/^## Fabricacao da placa/,/^## Arquivos/p' build/fab/INSTRUCOES-FABRICACAO.md | head -n -1)"
+          echo "URL_RELEASE=https://github.com/${GITHUB_REPOSITORY}" >> "$GITHUB_ENV"
+
+      - name: Atualizar o README, as imagens e a previa
+        if: github.event_name != 'pull_request'
+        run: |
+          mkdir -p docs/img docs/gerbers
+          cp build/img/render_top.png build/img/render_bottom.png docs/img/
+          cp build/fab/Previa/*.png docs/gerbers/
+          cp build/fab/PINOUT.md docs/PINOUT.md
+          sed 's|](\([A-Za-z_]*\.png\))|](gerbers/\1)|' \
+            build/fab/Previa/PREVIA-GERBERS.md > docs/PREVIA-GERBERS.md
+          python3 tools/fab/atualiza_readme.py --meta build/meta.json --release "$URL_RELEASE"
+
+      - name: Commitar de volta
+        if: github.event_name != 'pull_request'
+        run: |
+          git config user.name  'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add README.md docs/img docs/gerbers docs/PREVIA-GERBERS.md docs/PINOUT.md
+          if git diff --cached --quiet; then
+            echo 'Nada mudou no README nem nas imagens.'
+            exit 0
+          fi
+          git commit -m "chore(fab): atualiza pacote, previa, imagens e README [skip ci]
+
+          Gerado por .github/workflows/fabricacao.yml a partir do .PcbDoc e das folhas de esquema."
+          git push origin "HEAD:${GITHUB_REF_NAME}"
