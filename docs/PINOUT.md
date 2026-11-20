@@ -1,6 +1,6 @@
 # Pinout — ALLPRINT-CAPBOARD-677512
 
-Versao do pacote: **revA-20261120-local**. Gerado das nets do `.PcbDoc` pelo CI —
+Versao do pacote: **revA-20261120-b001f37**. Gerado das nets do `.PcbDoc` pelo CI —
 nao editar a mao: o que esta aqui e o que esta no cobre.
 
 Sinal em `codigo` = nome da net no esquema. `→ R10.1, U5.13` = net sem nome:

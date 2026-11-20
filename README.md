@@ -236,7 +236,7 @@ mudam de endereco a cada versao, mesmo com os arquivos versionados por dentro.
 | [⬇ Pick and place da JLCPCB](https://github.com/DextroAllprint/allprint-capboard/releases/latest/download/ALLPRINT-CAPBOARD-677512-jlcpcb-cpl-latest.csv) | Designator, Mid X, Mid Y, Layer, Rotation |
 | [⬇ Esquema eletrico](https://github.com/DextroAllprint/allprint-capboard/releases/latest/download/ALLPRINT-CAPBOARD-677512-esquema-latest.pdf) | PDF do esquema |
 
-Versao publicada: **`revA-20261120-local`**. Dentro do pacote os arquivos levam
+Versao publicada: **`revA-20261120-b001f37`**. Dentro do pacote os arquivos levam
 essa mesma versao no nome. A previa camada a camada esta em
 [`docs/PREVIA-GERBERS.md`](docs/PREVIA-GERBERS.md), e o pino a pino de
 conectores e CIs em [`docs/PINOUT.md`](docs/PINOUT.md).

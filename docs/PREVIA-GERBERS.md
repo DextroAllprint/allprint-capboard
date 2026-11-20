@@ -1,6 +1,6 @@
 # Previa dos Gerbers — ALLPRINT-CAPBOARD-677512
 
-Versao do pacote: **revA-20261120-local**.
+Versao do pacote: **revA-20261120-b001f37**.
 
 Uma imagem por camada, renderizada do mesmo `.kicad_pcb` que gerou os
 Gerbers. O contorno da placa (`Edge.Cuts`, o Mechanical 1 do Altium) esta
