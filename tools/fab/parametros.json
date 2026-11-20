@@ -1,0 +1,42 @@
+{
+  "projeto": "ALLPRINT-CAPBOARD-677512",
+  "numero_dextro": "677.512",
+  "revisao": "A",
+  "pcb": "ALLPRINT-CAPBOARD-677512.PcbDoc",
+  "drr": "Outputs/NC Drill/ALLPRINT-CAPBOARD-677512.DRR",
+  "processo": {
+    "material": "FR-4 TG150",
+    "espessura_mm": 1.6,
+    "cobre_externo_oz": 1,
+    "mascara_cor": "verde",
+    "silk_cor": "branco",
+    "acabamento": "HASL sem chumbo",
+    "tolerancia_contorno_mm": 0.2,
+    "teste_eletrico": "100% flying probe",
+    "quantidade_prototipo": 5
+  },
+  "montagem": {
+    "casa": "JLCPCB",
+    "lado_smt": "top",
+    "aceitar_divergencia_encapsulamento": false,
+    "nao_montar": {
+      "R10": "R9 e R10 (0R) escolhem a alimentacao do pino 1 de J9 — 3,3V por R9 ou VSYS por R10. Montar os dois poe 3,3V em curto com VSYS. Sai R9 (3,3V); trocar aqui se o expansor pedir VSYS.",
+      "R61": "R61 (3,3V) e R64 (GND) escolhem o nivel do pino 21 (SD_MODE) do TMC5160; montar os dois poe 3,3V em curto com GND. Fica R64 (GND), como na variante Assembly da cpu-video-scan (R78 fora, R81 montado)."
+    }
+  },
+  "esquema_pdf": "Outputs/Project_Outputs.PDF",
+  "esquema_glob": "ALLPRINT-CAPBOARD-677512-*.SchDoc",
+  "legendas": {
+    "top": "Vista de cima — o TMC5160 (U12) com as meias-pontes AO4882 e o conector do motor J8 à esquerda, o STM32G431 (U1) à direita, o relé K2 e o borne J1 no canto superior direito, e os conectores de campo J7, J4, J3, J6 e J5 na borda de baixo:",
+    "alt_top": "Vista de cima da capboard",
+    "bottom": "Vista de baixo — sem componentes: só trilhas, planos e os pinos dos conectores passantes:",
+    "alt_bottom": "Vista de baixo da capboard"
+  },
+  "pinout": {},
+  "observacoes": [
+    "Placa de 4 camadas.",
+    "Os conectores de campo (J3-J8) dividem a mesma alimentacao de entrada, antes do fusivel F1 de 10 A.",
+    "R9 e R10 sao mutuamente exclusivos (pino 1 de J9): so R9 vai para a montagem.",
+    "R61 e R64 sao mutuamente exclusivos (SD_MODE do TMC5160): so R64 vai para a montagem."
+  ]
+}

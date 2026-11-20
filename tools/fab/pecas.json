@@ -1,0 +1,8 @@
+{
+  "_comentario": [
+    "Arquivo de EXCECAO. Por padrao, componente com codigo LCSC no esquema entra",
+    "na montagem; sem codigo, fica de fornecimento Dextro. Use uma entrada aqui",
+    "para tirar peca da montagem, declarar encapsulamento esperado, ou substituir",
+    "peca quando o esquema estiver defasado em relacao ao PCB."
+  ]
+}

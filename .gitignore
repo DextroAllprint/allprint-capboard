@@ -40,3 +40,7 @@ Desktop.ini
 # Arquivos temporários de editores
 *.swp
 *~
+
+# Pacote de fabricacao gerado por tools/fab/build.py
+build/
+__pycache__/
