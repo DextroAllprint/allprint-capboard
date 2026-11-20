@@ -215,9 +215,13 @@ def montar_bom(board, folhas, pecas, params):
         for comp in esquema.componentes(folha):
             ref = comp["designador"]
             if ref in do_esquema:
-                if origem_folha[ref] == folha:
+                anterior = do_esquema[ref]
+                mesma_peca = (anterior["biblioteca"] == comp["biblioteca"]
+                              and anterior["lcsc"] == comp["lcsc"])
+                if origem_folha[ref] == folha or mesma_peca:
                     # Simbolo multiparte: o mesmo componente fisico desenhado em
-                    # varias partes na mesma folha. Uma peca so na BOM.
+                    # varias partes (U7A num folha, U7B noutra, ou na mesma).
+                    # Uma peca so na BOM.
                     multiparte[ref] += 1
                 else:
                     avisar(f"designador {ref} aparece em duas folhas: "
